@@ -1,7 +1,10 @@
-import {drawScene} from "./drawScene";
-import {initializeKeyListeners} from "./keyboardEvents";
-import { getCanvas } from "./canvas";
-import { getShaderProgramSources } from "./shaderProgram";
+// https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/building-basic-perspective-projection-matrix
+// https://github.com/toji/gl-matrix/blob/master/src/gl-matrix/mat4.js
+import {drawScene} from "./lib/drawScene";
+import {initializeKeyListeners} from "./lib/keyboardEvents";
+import { getCanvas } from "./lib/canvas";
+import { getShaderProgramSources } from "./lib/shaderProgram";
+import { Cube } from "./lib/Cube";
 
 initializeKeyListeners();
 main();
@@ -67,44 +70,8 @@ function initBuffers(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   // Now create an array of positions for the cube.
-
-  const positions = [
-    // Front face
-    -1.0, -1.0,  1.0,
-     1.0, 1.0,  1.0,
-     1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
-
-    // Back face
-    -2.0, -2.0, -2.0,
-    -2.0,  -2.0, -2.0,
-     2.0,  2.0, -2.0,
-     2.0, -2.0, -2.0,
-
-    // Top face
-    -1.0,  1.0, -1.0,
-    -1.0,  1.0,  1.0,
-     1.0,  1.0,  1.0,
-     1.0,  1.0, -1.0,
-
-    // Bottom face
-    -1.0, -1.0, -1.0,
-     1.0, -1.0, -1.0,
-     1.0, -1.0,  1.0,
-    -1.0, -1.0,  1.0,
-
-    // Right face
-     1.0, -1.0, -1.0,
-     1.0,  1.0, -1.0,
-     1.0,  1.0,  1.0,
-     1.0, -1.0,  1.0,
-
-    // Left face
-    -1.0, -1.0, -1.0,
-    -1.0, -1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    -1.0,  1.0, -1.0,
-  ];
+  const cubes = [new Cube(0), new Cube(1)];
+  const positions = cubes[1].toArray().concat(cubes[0].toArray);
 
   // Now pass the list of positions into WebGL to build the
   // shape. We do this by creating a Float32Array from the
@@ -116,8 +83,8 @@ function initBuffers(gl) {
   // for each face.
 
   const faceColors = [
-    [1.0,  1.0,  1.0,  1.0],    // Front face: white
-    [1.0,  0.0,  0.0,  1.0],    // Back face: red
+    [1.0,  1.0,  1.0,  2.0],    // Front face: white
+    [1.0,  0.0,  0.0,  5.0],    // Back face: red
     [0.0,  1.0,  0.0,  1.0],    // Top face: green
     [0.0,  0.0,  1.0,  1.0],    // Bottom face: blue
     [1.0,  1.0,  0.0,  1.0],    // Right face: yellow
@@ -150,9 +117,9 @@ function initBuffers(gl) {
   // position.
 
   const indices = [
-    0,  1,  2,      0,  2,  3,    // front
+    0,  0,  0,      0,  2,  3,    // front
     4,  5,  6,      4,  6,  7,    // back
-    8,  9,  10,     8,  10, 11,   // top
+    8,  9,  10,     8,  1, 11,   // top
     12, 13, 14,     12, 14, 15,   // bottom
     16, 17, 18,     16, 18, 19,   // right
     20, 21, 22,     20, 22, 23,   // left
